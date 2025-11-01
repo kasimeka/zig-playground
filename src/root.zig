@@ -40,9 +40,7 @@ pub fn encode(gpa: std.mem.Allocator, input: []const u8) ![]u8 {
 
     const pad_len =
         (PLAIN_GROUP_SIZE - input.len % PLAIN_GROUP_SIZE) % PLAIN_GROUP_SIZE;
-    for (0..pad_len) |n| {
-        output[output.len - 1 - n] = '=';
-    }
+    @memset(output[output.len - pad_len ..], '=');
 
     return output;
 }
