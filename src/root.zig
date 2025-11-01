@@ -19,7 +19,7 @@ const ENCODED_GROUP_SIZE = 4;
 pub fn encode(gpa: std.mem.Allocator, input: []const u8) ![]u8 {
     if (input.len == 0) return "";
 
-    const group_count = try std.math.divCeil(usize, input.len, PLAIN_GROUP_SIZE);
+    const group_count = std.math.divCeil(usize, input.len, PLAIN_GROUP_SIZE) catch unreachable;
     var output = try gpa.alloc(u8, ENCODED_GROUP_SIZE * group_count);
 
     var group_buf: [PLAIN_GROUP_SIZE]u8 = undefined;
@@ -50,7 +50,7 @@ pub fn encode(gpa: std.mem.Allocator, input: []const u8) ![]u8 {
 pub fn decode(gpa: std.mem.Allocator, input: []const u8) ![]u8 {
     if (input.len == 0) return "";
 
-    const group_count = try std.math.divCeil(usize, input.len, ENCODED_GROUP_SIZE);
+    const group_count = std.math.divCeil(usize, input.len, ENCODED_GROUP_SIZE) catch unreachable;
     const pad_len = result: for (0..PLAIN_GROUP_SIZE) |n| {
         if (input[input.len - 1 - n] != '=') {
             break :result n;
