@@ -12,14 +12,15 @@
     forAllSystems = f:
       inputs.nixpkgs.lib.genAttrs
       (import inputs.systems)
-      (system: f inputs.nixpkgs.legacyPackages.${system} system);
+      (system: f inputs.nixpkgs.legacyPackages.${system});
   in {
-    devShells = forAllSystems (pkgs: system: {
+    devShells = forAllSystems (pkgs: {
       default = pkgs.mkShell {
         packages = [
-          inputs.zig.packages.${system}.master
-          inputs.zls.packages.${system}.default
+          inputs.zig.packages.${pkgs.system}.master
+          inputs.zls.packages.${pkgs.system}.default
         ];
+        shellHook = ''echo made with love by wrd'';
       };
     });
   };

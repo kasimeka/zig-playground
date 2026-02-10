@@ -1,11 +1,14 @@
 const std = @import("std");
 const base64 = @import("base64");
+const Io = std.Io;
 
 pub fn main() !void {
     const buf_len = 100;
+    var threaded = Io.Threaded.init_single_threaded;
+    const io = threaded.io();
 
     var in_buf: [buf_len]u8 = undefined;
-    var stdin = std.fs.File.stdin().reader(&in_buf);
+    var stdin = std.fs.File.stdin().reader(io, &in_buf);
 
     var allocator = std.heap.DebugAllocator(.{}).init;
     const gpa = allocator.allocator();
