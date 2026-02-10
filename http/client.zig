@@ -3,12 +3,12 @@ const std = @import("std");
 const Io = std.Io;
 const net = std.Io.net;
 
-pub fn main() !void {
+pub fn main(init: std.process.Init.Minimal) !void {
     var allocator = std.heap.DebugAllocator(.{}).init;
     defer std.debug.assert(allocator.deinit() == .ok);
     const gpa = allocator.allocator();
 
-    var threaded = Io.Threaded.init(gpa);
+    var threaded = Io.Threaded.init(gpa, .{ .environ = init.environ });
     defer threaded.deinit();
     const io = threaded.io();
 
@@ -22,7 +22,7 @@ pub fn main() !void {
 
     writer.interface.print("henlo fren\n", .{}) catch {};
     writer.interface.print("how you doing\n", .{}) catch {};
-    writer.interface.print("fr fr", .{}) catch {};
+    writer.interface.print("fr fr\n", .{}) catch {};
 
     writer.interface.flush() catch {};
     std.debug.print("{s}", .{reader.interface.peekGreedy(1) catch ""});
